@@ -4,6 +4,6 @@ import jakarta.persistence.Embeddable
 
 @Embeddable
 data class Adress(
-    var zipCode: String = "",
+    var zipcode: String = "",
     var street: String = ""
 )
