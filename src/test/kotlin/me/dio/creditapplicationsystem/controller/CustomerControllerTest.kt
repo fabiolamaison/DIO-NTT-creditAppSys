@@ -137,13 +137,13 @@ class CustomerControllerTest {
         //then
         mockMvc.perform(MockMvcRequestBuilders.get("$URL/$invalidId")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Bad Request! Consult the documentation"))
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Not Found! Inexistent ID"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.currentTime").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(404))
             .andExpect(
                 MockMvcResultMatchers.jsonPath("$.exception")
-                    .value("class me.dio.creditapplicationsystem.exception.BusinessException")
+                    .value("class jakarta.persistence.EntityNotFoundException")
             )
             .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
             .andDo(MockMvcResultHandlers.print())
@@ -172,7 +172,7 @@ class CustomerControllerTest {
         //then
         mockMvc.perform(MockMvcRequestBuilders.delete("$URL/${invalidId}")
             .accept(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
             .andDo(MockMvcResultHandlers.print())
     }
 
@@ -200,7 +200,7 @@ class CustomerControllerTest {
     }
 
     @Test
-    fun `should NOT update user and return status 400`(){
+    fun `should NOT update user due to invalid ID and return status 404`(){
         //given
         val customer: Customer = customerRepository.save(buildCustomerDto().toEntity())
         val customerUpdateDto : CustomerUpdateDto = buildCustomerUpdateDto()
@@ -212,7 +212,7 @@ class CustomerControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.patch("$URL?customerId=${invalidId}")
             .contentType(MediaType.APPLICATION_JSON)
             .content(customerUpdateString))
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.status().isNotFound)
             .andDo(MockMvcResultHandlers.print())
     }
 

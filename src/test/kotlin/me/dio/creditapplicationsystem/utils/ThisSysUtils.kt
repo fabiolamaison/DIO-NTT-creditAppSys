@@ -4,6 +4,7 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.*
 import java.util.concurrent.ThreadLocalRandom
+import kotlin.math.absoluteValue
 import kotlin.random.Random
 
 class ThisSysUtils {
@@ -12,7 +13,7 @@ class ThisSysUtils {
         fun idOtherThan(validId: Long): Long {
             var invalidId : Long
             do {
-                invalidId = Random.nextLong()
+                invalidId = Random.nextLong().absoluteValue
 
             } while(validId == invalidId)
             return invalidId
@@ -30,8 +31,8 @@ class ThisSysUtils {
 
         fun dateWithinRange(startDate: LocalDate, monthRange: Long): LocalDate {
             val endDate = startDate.plusMonths(monthRange)
-            val daysBetween = ChronoUnit.MONTHS.between(startDate, endDate)
-            val randomDays = ThreadLocalRandom.current().nextLong(daysBetween + 1)
+            val daysBetween = ChronoUnit.DAYS.between(startDate, endDate)
+            val randomDays = ThreadLocalRandom.current().nextLong(daysBetween)
             return startDate.plusDays(randomDays)
         }
     }
