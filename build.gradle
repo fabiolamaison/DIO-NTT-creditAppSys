@@ -27,8 +27,13 @@ dependencies {
 	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0'
 	runtimeOnly 'com.h2database:h2'
+	// a implementação spring boot starter test já traz JUnit e AssertJ
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	// o MockK permite criar 'replicas' (mocks) de interfaces, repositórios etc de forma
+	// a facilitar os testes, possibilitando uma implementação simplificada dos mesmos
+	testImplementation 'io.mockk:mockk:1.13.4'
 }
 
 tasks.withType(KotlinCompile) {

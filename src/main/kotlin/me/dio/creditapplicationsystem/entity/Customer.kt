@@ -13,7 +13,7 @@ data class Customer(
     @Column(nullable = false) var email: String = "",
     @Column(nullable = false) var password: String = "",
     @Column(nullable = false) var income: BigDecimal = BigDecimal.ZERO,
-    @Column(nullable = false) @Embedded var adress: Adress = Adress(),
+    @Column(nullable = false) @Embedded var address: Address = Address(),
     @Column(nullable = false) @OneToMany(fetch = FetchType.LAZY,
         cascade = [CascadeType.REMOVE, CascadeType.PERSIST],
     mappedBy = "customer")
@@ -35,7 +35,7 @@ data class Customer(
 
     override fun toString(): String {
         return "Customer(id=$id, firstName=$firstName, lastName=$lastName, " +
-                "CPF=$cpf, e-mail=$email, adress=$adress" +
+                "CPF=$cpf, e-mail=$email, adress=$address" +
                 "password=$password, credits=$credit)"
     }
 }

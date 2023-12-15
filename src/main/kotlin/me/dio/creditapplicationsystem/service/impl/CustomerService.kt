@@ -1,5 +1,6 @@
 package me.dio.creditapplicationsystem.service.impl
 
+import jakarta.persistence.EntityNotFoundException
 import me.dio.creditapplicationsystem.entity.Customer
 import me.dio.creditapplicationsystem.exception.BusinessException
 import me.dio.creditapplicationsystem.repository.CustomerRepository
@@ -14,7 +15,7 @@ class CustomerService(private val customerRepository: CustomerRepository): ICust
 
     override fun findById(id: Long): Customer =
         this.customerRepository.findById(id).orElseThrow {
-            BusinessException("Id $id not found")
+            EntityNotFoundException("Id $id not found")
         }
 
     override fun delete(id: Long) {

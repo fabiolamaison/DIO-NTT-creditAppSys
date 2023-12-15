@@ -1,5 +1,6 @@
 package me.dio.creditapplicationsystem.exception
 
+import jakarta.persistence.EntityNotFoundException
 import org.springframework.dao.DataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -23,7 +24,7 @@ class RestExceptionHandler {
         }
         return ResponseEntity(
             ExceptionDetails(
-                title = "Bad Request! consult the documentation",
+                title = "Bad Request! Consult the documentation",
                 currentTime = LocalDateTime.now(),
                 status = HttpStatus.BAD_REQUEST.value(),
                 exception = ex.javaClass.toString(),
@@ -36,7 +37,7 @@ class RestExceptionHandler {
     fun validExceptionHandler(ex: DataAccessException): ResponseEntity<ExceptionDetails>{
         return ResponseEntity.status(HttpStatus.CONFLICT).body(
                 ExceptionDetails(
-                    title = "Confilct! consult the documentation",
+                    title = "Conflict! Consult the documentation",
                     currentTime = LocalDateTime.now(),
                     status = HttpStatus.CONFLICT.value(),
                     exception = ex.javaClass.toString(),
@@ -48,9 +49,9 @@ class RestExceptionHandler {
     @ExceptionHandler(BusinessException::class)
     fun validExceptionHandler(ex: BusinessException): ResponseEntity<ExceptionDetails>{
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionDetails(
-                title = "Bad Request! consult the documentation",
+                title = "Bad Request! Consult the documentation",
                 currentTime = LocalDateTime.now(),
-                status = HttpStatus.CONFLICT.value(),
+                status = HttpStatus.NOT_FOUND.value(),
                 exception = ex.javaClass.toString(),
                 details = mutableMapOf(ex.cause.toString() to ex.message)
             )
@@ -58,10 +59,22 @@ class RestExceptionHandler {
     }
     @ExceptionHandler(IllegalArgumentException::class)
     fun validExceptionHandler(ex: IllegalArgumentException): ResponseEntity<ExceptionDetails>{
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ExceptionDetails(
-            title = "Bad Request! consult the documentation",
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ExceptionDetails(
+            title = "Bad Request! Consult the documentation",
             currentTime = LocalDateTime.now(),
             status = HttpStatus.CONFLICT.value(),
+            exception = ex.javaClass.toString(),
+            details = mutableMapOf(ex.cause.toString() to ex.message)
+        )
+        )
+    }
+
+    @ExceptionHandler(RuntimeException::class)
+    fun validExceptionHandler(ex: EntityNotFoundException): ResponseEntity<ExceptionDetails>{
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ExceptionDetails(
+            title = "Not Found! Inexistent ID",
+            currentTime = LocalDateTime.now(),
+            status = HttpStatus.NOT_FOUND.value(),
             exception = ex.javaClass.toString(),
             details = mutableMapOf(ex.cause.toString() to ex.message)
         )
