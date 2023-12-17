@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
-class ThisSysUtils {
+class ThisSysTestUtils {
 
     companion object {
         fun idOtherThan(validId: Long): Long {

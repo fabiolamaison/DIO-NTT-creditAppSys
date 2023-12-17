@@ -15,7 +15,7 @@ class CustomerService(private val customerRepository: CustomerRepository): ICust
 
     override fun findById(id: Long): Customer =
         this.customerRepository.findById(id).orElseThrow {
-            EntityNotFoundException("Id $id not found")
+            BusinessException("Id $id not found")
         }
 
     override fun delete(id: Long) {

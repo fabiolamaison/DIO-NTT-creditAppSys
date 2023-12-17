@@ -5,7 +5,7 @@ import me.dio.creditapplicationsystem.dto.CustomerDto
 import me.dio.creditapplicationsystem.dto.CustomerUpdateDto
 import me.dio.creditapplicationsystem.entity.Customer
 import me.dio.creditapplicationsystem.repository.CustomerRepository
-import me.dio.creditapplicationsystem.utils.ThisSysUtils
+import me.dio.creditapplicationsystem.utils.ThisSysTestUtils
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -45,8 +45,10 @@ class CustomerControllerTest {
         val customerDto: CustomerDto = buildCustomerDto()
         val customerAsString: String = objectMapper.writeValueAsString(customerDto)
         //when
-        mockMvc.perform(MockMvcRequestBuilders.post(URL)
-            .contentType(MediaType.APPLICATION_JSON).content(customerAsString))
+        mockMvc.perform(
+            MockMvcRequestBuilders.post(URL)
+            .contentType(MediaType.APPLICATION_JSON).content(customerAsString)
+        )   //then
             .andExpect(MockMvcResultMatchers.status().isCreated)
             .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Cami"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Cavalcante"))
@@ -57,7 +59,6 @@ class CustomerControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("$.income").value(BigDecimal.valueOf(1000.0)))
             .andExpect(MockMvcResultMatchers.status().isEqualTo(201))
             .andDo(MockMvcResultHandlers.print())
-        //then
     }
 
     @Test
@@ -67,9 +68,10 @@ class CustomerControllerTest {
         val dtoAsString: String = objectMapper.writeValueAsString(customerDto)
         customerRepository.save(customerDto.toEntity())
         //when
-        //then
-        mockMvc.perform(MockMvcRequestBuilders.post(URL)
-            .contentType(MediaType.APPLICATION_JSON).content(dtoAsString))
+        mockMvc.perform(
+            MockMvcRequestBuilders.post(URL)
+            .contentType(MediaType.APPLICATION_JSON).content(dtoAsString)
+        )   //then
             .andExpect(MockMvcResultMatchers.status().isConflict)
             .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Conflict! Consult the documentation"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.currentTime").exists())
@@ -89,12 +91,11 @@ class CustomerControllerTest {
         val customerDto: CustomerDto = buildCustomerDto(firstName = "")
         val dtoAsString: String = objectMapper.writeValueAsString(customerDto)
         //when
-        //then
         mockMvc.perform(
             MockMvcRequestBuilders.post(URL)
                 .content(dtoAsString)
                 .contentType(MediaType.APPLICATION_JSON)
-        )
+        )   //then
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Bad Request! Consult the documentation"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.currentTime").exists())
@@ -112,10 +113,10 @@ class CustomerControllerTest {
         //given
         val customer: Customer = customerRepository.save(buildCustomerDto().toEntity())
         //when
-
-        //then
-        mockMvc.perform(MockMvcRequestBuilders.get("$URL/${customer.id}")
-            .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("$URL/${customer.id}")
+            .accept(MediaType.APPLICATION_JSON)
+        )   //then
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Cami"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Cavalcante"))
@@ -131,19 +132,19 @@ class CustomerControllerTest {
     fun `should NOT find customer by invalid id returning status 404`(){
         //given
         val customer: Customer = customerRepository.save(buildCustomerDto().toEntity())
-        val invalidId: Long = ThisSysUtils.idOtherThan(customer.id!!)
+        val invalidId: Long = ThisSysTestUtils.idOtherThan(customer.id!!)
         //when
-
-        //then
-        mockMvc.perform(MockMvcRequestBuilders.get("$URL/$invalidId")
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Not Found! Inexistent ID"))
+        mockMvc.perform(
+            MockMvcRequestBuilders.get("$URL/$invalidId")
+            .accept(MediaType.APPLICATION_JSON)
+        )   //then
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
+            .andExpect(MockMvcResultMatchers.jsonPath("$.title").value("Bad Request! Consult the documentation"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.currentTime").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(404))
             .andExpect(
                 MockMvcResultMatchers.jsonPath("$.exception")
-                    .value("class jakarta.persistence.EntityNotFoundException")
+                    .value("class me.dio.creditapplicationsystem.exception.BusinessException")
             )
             .andExpect(MockMvcResultMatchers.jsonPath("$.details[*]").isNotEmpty)
             .andDo(MockMvcResultHandlers.print())
@@ -156,8 +157,10 @@ class CustomerControllerTest {
         //when
 
         //then
-        mockMvc.perform(MockMvcRequestBuilders.delete("$URL/${customer.id}")
-            .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("$URL/${customer.id}")
+            .accept(MediaType.APPLICATION_JSON)
+        )   //then
             .andExpect(MockMvcResultMatchers.status().isNoContent)
             .andDo(MockMvcResultHandlers.print())
     }
@@ -166,13 +169,13 @@ class CustomerControllerTest {
     fun `should NOT delete user by id and return status 400`(){
         //given
         val customer: Customer = customerRepository.save(buildCustomerDto().toEntity())
-        val invalidId: Long = ThisSysUtils.idOtherThan(customer.id!!)
+        val invalidId: Long = ThisSysTestUtils.idOtherThan(customer.id!!)
         //when
-
-        //then
-        mockMvc.perform(MockMvcRequestBuilders.delete("$URL/${invalidId}")
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("$URL/${invalidId}")
+            .accept(MediaType.APPLICATION_JSON)
+        )   //then
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andDo(MockMvcResultHandlers.print())
     }
 
@@ -183,11 +186,11 @@ class CustomerControllerTest {
         val customerUpdateDto : CustomerUpdateDto = buildCustomerUpdateDto()
         val customerUpdateString: String = objectMapper.writeValueAsString(customerUpdateDto)
         //when
-
-        //then
-        mockMvc.perform(MockMvcRequestBuilders.patch("$URL?customerId=${customer.id}")
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("$URL?customerId=${customer.id}")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(customerUpdateString))
+            .content(customerUpdateString)
+        )   //then
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.firstName").value("Hadouken"))
             .andExpect(MockMvcResultMatchers.jsonPath("$.lastName").value("Honduras"))
@@ -205,14 +208,14 @@ class CustomerControllerTest {
         val customer: Customer = customerRepository.save(buildCustomerDto().toEntity())
         val customerUpdateDto : CustomerUpdateDto = buildCustomerUpdateDto()
         val customerUpdateString: String = objectMapper.writeValueAsString(customerUpdateDto)
-        val invalidId: Long = ThisSysUtils.idOtherThan(customer.id!!)
+        val invalidId: Long = ThisSysTestUtils.idOtherThan(customer.id!!)
         //when
-
-        //then
-        mockMvc.perform(MockMvcRequestBuilders.patch("$URL?customerId=${invalidId}")
+        mockMvc.perform(
+            MockMvcRequestBuilders.patch("$URL?customerId=${invalidId}")
             .contentType(MediaType.APPLICATION_JSON)
-            .content(customerUpdateString))
-            .andExpect(MockMvcResultMatchers.status().isNotFound)
+            .content(customerUpdateString)
+        )   //then
+            .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andDo(MockMvcResultHandlers.print())
     }
 

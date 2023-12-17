@@ -27,8 +27,9 @@ import kotlin.math.absoluteValue
 class CustomerServiceTest {
     @MockK lateinit var customerRepository: CustomerRepository
     @InjectMockKs lateinit var customerService: CustomerService
+
     @Test
-    fun `shouldCreateCustomer` (){
+    fun `should Create Customer` (){
         //given
         val fakeCustomer: Customer = buildCustomer()
         every { customerRepository.save(any()) } returns fakeCustomer
@@ -43,7 +44,7 @@ class CustomerServiceTest {
     @Test
     fun `should find customer by id`(){
         //given
-        val fakeId: Long = Random().nextLong()
+        val fakeId: Long = Random().nextLong().absoluteValue
         val fakeCustomer: Customer = buildCustomer(id = fakeId)
         every { customerRepository.findById(fakeId) } returns (Optional.of(fakeCustomer))
         //when
@@ -54,6 +55,7 @@ class CustomerServiceTest {
         Assertions.assertThat(actualCustomer).isSameAs(fakeCustomer)
         verify (exactly = 1) { customerRepository.findById(fakeId) }
     }
+
     @Test
     fun `should not find customer by id and throw BusinessException`(){
         //given
@@ -62,7 +64,7 @@ class CustomerServiceTest {
         //when
 
         //then
-        Assertions.assertThatExceptionOfType(EntityNotFoundException::class.java)
+        Assertions.assertThatExceptionOfType(BusinessException::class.java)
             .isThrownBy { customerService.findById(fakeId) }
             .withMessage("Id $fakeId not found")
         verify(exactly = 1){customerRepository.findById(fakeId)}
@@ -71,7 +73,7 @@ class CustomerServiceTest {
     @Test
     fun `should delete costumer by Id`(){
         //given
-        val fakeId: Long = Random().nextLong()
+        val fakeId: Long = Random().nextLong().absoluteValue
         val fakeCustomer: Customer = buildCustomer(id = fakeId)
         every { customerRepository.findById(fakeId) } returns (Optional.of(fakeCustomer))
         every { customerRepository.delete(fakeCustomer) }.just(runs)
@@ -81,6 +83,7 @@ class CustomerServiceTest {
         verify(exactly = 1){customerRepository.findById(fakeId)}
         verify(exactly = 1){customerRepository.delete(fakeCustomer)}
     }
+
     fun buildCustomer(
         firstName: String = "Cami",
         lastName: String = "Cavalcante",

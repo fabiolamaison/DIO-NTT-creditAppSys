@@ -38,4 +38,5 @@ data class Customer(
                 "CPF=$cpf, e-mail=$email, adress=$address" +
                 "password=$password, credits=$credit)"
     }
+
 }

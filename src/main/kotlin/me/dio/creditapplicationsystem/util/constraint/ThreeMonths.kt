@@ -3,6 +3,7 @@ package me.dio.creditapplicationsystem.util.constraint
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
+import me.dio.creditapplicationsystem.exception.BusinessException
 import me.dio.creditapplicationsystem.util.DateValidationUtils
 import java.time.LocalDate
 import kotlin.reflect.KClass
@@ -19,6 +20,7 @@ annotation class MaxThreeMonths(
 class MaxThreeMonthsValidator : ConstraintValidator<MaxThreeMonths, LocalDate> {
     override fun isValid(value: LocalDate?, context: ConstraintValidatorContext?): Boolean {
 
-        return value?.let { DateValidationUtils.isMaxThreeMonths(it) } ?: true
+        return value?.let { DateValidationUtils.isMaxThreeMonths(it) } ?:
+        throw BusinessException("First Installment need to be within 3 months from ${LocalDate.now()}")
     }
 }
