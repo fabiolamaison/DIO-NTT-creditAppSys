@@ -12,6 +12,7 @@ import me.dio.creditapplicationsystem.repository.CreditRepository
 import me.dio.creditapplicationsystem.repository.CustomerRepository
 import me.dio.creditapplicationsystem.service.impl.CreditService
 import me.dio.creditapplicationsystem.service.impl.CustomerService
+import me.dio.creditapplicationsystem.util.DateValidationUtils
 import me.dio.creditapplicationsystem.utils.ThisSysTestUtils
 import org.hamcrest.Matchers.*
 import org.hamcrest.Matchers.hasSize
@@ -162,7 +163,6 @@ class CreditControllerTest {
             .andDo(MockMvcResultHandlers.print())
     }
 
-    //Not Working as expected
     @Test
     fun `should NOT save credit due to date value and return status 400`(){
         //given
